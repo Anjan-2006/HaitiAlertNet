@@ -1,0 +1,6 @@
+{
+  "name": "HaitiAlertNet",
+  "description": "A web application providing real-time, community-driven disaster alerts and verified citizen reports for hyperlocal regions. It empowers communities through accessible relief resources and a live map dashboard.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

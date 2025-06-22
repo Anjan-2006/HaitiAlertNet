@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaitiAlertNet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+
+  <style>
+    :root {
+      --primary-blue: #0A84FF;
+      --primary-blue-rgb: 10, 132, 255;
+      --alert-red: #FF3B30;
+      --alert-red-rgb: 255, 59, 48;
+      
+      --light-bg-start: #FDFEFF; 
+      --light-bg-end: #F5F7FA;   
+      --white-bg: #FFFFFF;
+      --dark-text: #171717; 
+      --medium-text: #525252; 
+      --light-text: #E5E5E5; 
+      --border-color-light: #D4D4D8; 
+
+      --glass-bg-light: rgba(255, 255, 255, 0.65); 
+      --glass-border-light: rgba(200, 200, 200, 0.4); 
+      --glass-shadow-light: 0 10px 35px rgba(0, 0, 0, 0.07); 
+      --glass-blur-light: 16px; 
+
+      --dm-bg-color: #0D0D0F; 
+      --dm-text-color: var(--light-text);
+      --dm-medium-text-color: #9CA3AF; 
+      --dm-primary-color: var(--alert-red); 
+      --dm-primary-color-rgb: var(--alert-red-rgb);
+      --dm-card-bg-color: #1A1A1C; 
+      --dm-link-color: var(--primary-blue);
+      --dm-border-color: #2D2D30; 
+
+      --glass-bg-dark: rgba(26, 26, 28, 0.7); 
+      --glass-border-dark: rgba(100, 100, 100, 0.5); 
+      --glass-shadow-dark: 0 10px 35px rgba(0, 0, 0, 0.12);
+      --glass-blur-dark: 18px; 
+
+      --primary-gradient-light: linear-gradient(135deg, var(--primary-blue) 0%, #0062C3 100%);
+      --alert-gradient-light: linear-gradient(135deg, var(--alert-red) 0%, #D92B21 100%);
+      --primary-gradient-dark: linear-gradient(135deg, var(--alert-red) 0%, #CC2A21 100%);
+
+      /* Default current values (light mode) */
+      --current-bg-color: var(--light-bg-start); 
+      --current-text-color: var(--dark-text);
+      --current-medium-text-color: var(--medium-text);
+      --current-primary-color: var(--primary-blue);
+      --current-primary-color-rgb: var(--primary-blue-rgb);
+      --current-card-bg-color: var(--white-bg);
+      --current-link-color: var(--primary-blue);
+      --current-border-color: var(--border-color-light);
+      --current-glass-bg: var(--glass-bg-light);
+      --current-glass-border: var(--glass-border-light);
+      --current-glass-shadow: var(--glass-shadow-light);
+      --current-glass-blur: var(--glass-blur-light);
+      --current-primary-gradient: var(--primary-gradient-light);
+      --current-alert-gradient: var(--alert-gradient-light);
+      --current-body-bg-base: var(--white-bg); /* Base for body */
+
+      --default-border-radius: 1rem; 
+      --input-border-radius: 0.625rem; 
+
+      /* Page Specific Backgrounds */
+      --home-bg-light: linear-gradient(135deg, #EFF6FF 0%, #FDFCFB 100%); /* Light blue to off-white */
+      --home-bg-dark: linear-gradient(135deg, #0D1B2A 0%, #111827 100%); /* Darker blue to dark gray */
+      --map-bg-light: #F9FAFB; /* Very light gray */
+      --map-bg-dark: #1F2937; /* Dark slate gray */
+      --report-bg-light: linear-gradient(to bottom right, #F0FDF4, #FDFEFF); /* Light green to light blue */
+      --report-bg-dark: linear-gradient(to bottom right, #052e16, #0c1e35); /* Dark green to dark blue */
+      --resources-bg-light: #F5F3FF; /* Light lavender */
+      --resources-bg-dark: #1E1B32; /* Dark purple */
+      --admin-bg-light: #FFFBEB; /* Light yellow */
+      --admin-bg-dark: #3A2E05; /* Dark gold */
+      --newsdetail-bg-light: #F8F8F8; /* Simple light gray */
+      --newsdetail-bg-dark: #18181B; /* Simple darker gray */
+      
+      /* Footer Specific Colors */
+      --footer-bg-light: #1F2937; /* Dark Slate Gray */
+      --footer-text-light: #D1D5DB; /* Light gray text */
+      --footer-link-light: #9CA3AF;
+      --footer-link-hover-light: var(--primary-blue);
+      --footer-title-light: #F3F4F6;
+      --footer-border-light: #374151;
+
+      --footer-bg-dark: #0F172A; /* Very Dark Blue/Slate */
+      --footer-text-dark: #94A3B8;
+      --footer-link-dark: #64748B;
+      --footer-link-hover-dark: var(--alert-red);
+      --footer-title-dark: #E2E8F0;
+      --footer-border-dark: #1E293B;
+
+      --current-footer-bg: var(--footer-bg-light);
+      --current-footer-text: var(--footer-text-light);
+      --current-footer-link: var(--footer-link-light);
+      --current-footer-link-hover: var(--footer-link-hover-light);
+      --current-footer-title: var(--footer-title-light);
+      --current-footer-border: var(--footer-border-light);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif; 
+      background: var(--current-body-bg-base); /* Simplified base background */
+      color: var(--current-text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      line-height: 1.65; 
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Contrast mode body adjustments are now handled by --current-body-bg-base in AppContext */
+    
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+
+    input[type="text"], input[type="file"], input[type="email"], input[type="password"], textarea, select {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      border-radius: var(--input-border-radius) !important;
+      border: 1px solid var(--current-border-color) !important;
+      background-color: var(--current-card-bg-color) !important;
+      color: var(--current-text-color) !important;
+      padding: 0.75rem 1rem; 
+    }
+    input[type="text"]:focus, input[type="file"]:focus, input[type="email"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+      border-color: var(--current-primary-color) !important; 
+      box-shadow: 0 0 0 3.5px rgba(var(--current-primary-color-rgb), 0.2) !important; 
+      background-color: var(--current-card-bg-color) !important; /* Keep card bg on focus for better contrast */
+      outline: none;
+    }
+    select {
+      appearance: none; 
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.25em 1.25em;
+      padding-right: 2.5rem; 
+    }
+    body.contrast-mode select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    }
+    
+    ::-webkit-scrollbar { width: 8px; height: 8px;}
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(var(--primary-blue-rgb), 0.35); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(var(--primary-blue-rgb), 0.55); }
+    body.contrast-mode ::-webkit-scrollbar-thumb { background: rgba(var(--alert-red-rgb), 0.35); }
+    body.contrast-mode ::-webkit-scrollbar-thumb:hover { background: rgba(var(--alert-red-rgb), 0.55); }
+
+
+    .leaflet-popup-content-wrapper { 
+      border-radius: var(--input-border-radius) !important; 
+      background-color: var(--current-card-bg-color) !important; 
+      color: var(--current-text-color) !important; 
+      box-shadow: var(--current-glass-shadow) !important;
+      padding: 0.75rem !important; 
+    }
+    .leaflet-popup-tip { background-color: var(--current-card-bg-color) !important;}
+    .leaflet-tooltip {
+      border-radius: var(--input-border-radius) !important;
+      background-color: var(--current-glass-bg) !important;
+      color: var(--current-text-color) !important;
+      border: 1px solid var(--current-glass-border) !important;
+      box-shadow: var(--current-glass-shadow) !important;
+      -webkit-backdrop-filter: blur(var(--current-glass-blur)); 
+      backdrop-filter: blur(var(--current-glass-blur));
+      padding: 8px 12px !important; 
+      font-size: 0.875rem; 
+    }
+     .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+        background-color: var(--current-card-bg-color) !important;
+        color: var(--current-primary-color) !important;
+        border: 1px solid var(--current-border-color) !important;
+        border-radius: var(--input-border-radius) !important;
+        box-shadow: var(--current-glass-shadow) !important;
+        width: 34px !important; height: 34px !important; line-height: 34px !important;
+    }
+     .leaflet-control-zoom-in:hover, .leaflet-control-zoom-out:hover {
+        background-color: rgba(var(--current-primary-color-rgb), 0.08) !important;
+    }
+    
+    .glassmorphism-card {
+        background: var(--current-glass-bg);
+        -webkit-backdrop-filter: blur(var(--current-glass-blur));
+        backdrop-filter: blur(var(--current-glass-blur));
+        border: 1px solid var(--current-glass-border);
+        box-shadow: var(--current-glass-shadow);
+        border-radius: var(--default-border-radius);
+    }
+
+    .custom-map-controls button, .custom-map-search {
+        background-color: var(--current-card-bg-color);
+        color: var(--current-text-color);
+        border: 1px solid var(--current-border-color);
+        border-radius: var(--input-border-radius);
+        box-shadow: var(--current-glass-shadow);
+    }
+     .custom-map-search input {
+        background-color: transparent;
+        color: var(--current-text-color);
+    }
+    .leaflet-user-location-marker {
+        width: 20px !important; 
+        height: 20px !important;
+        background-color: var(--current-primary-color) !important;
+        border: 3.5px solid var(--white-bg) !important; 
+        border-radius: 50%;
+        box-shadow: 0 0 0 4.5px var(--current-primary-color), 0 2px 6px rgba(0,0,0,0.25) !important;
+    }
+    body.contrast-mode .leaflet-user-location-marker {
+        background-color: var(--dm-primary-color) !important; 
+        border: 3.5px solid var(--dm-bg-color) !important;
+        box-shadow: 0 0 0 4.5px var(--dm-primary-color), 0 2px 6px rgba(0,0,0,0.25) !important;
+    }
+    
+    .focus\:ring-\[var\(--primary-blue\)\]:focus {
+      --tw-ring-color: var(--current-primary-color) !important;
+    }
+    .focus\:ring-\[var\(--alert-red\)\]:focus {
+       --tw-ring-color: var(--alert-red) !important;
+    }
+    .focus\:border-\[var\(--primary-blue\)\]:focus {
+      border-color: var(--current-primary-color) !important;
+    }
+     .focus\:border-\[var\(--alert-red\)\]:focus {
+      border-color: var(--alert-red) !important;
+    }
+
+    /* Basic CSS Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.5s ease-out forwards; }
+    
+    @keyframes slideInUp {
+        from { transform: translateY(100%); opacity: 0;}
+        to { transform: translateY(0); opacity: 1;}
+    }
+    .animate-slideInUp { animation: slideInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+
+    @keyframes markerBounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 1; }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-markerBounceIn {
+      animation: markerBounceIn 0.6s ease-out forwards;
+    }
+    
+    /* Utility for elements that need initial opacity for animation */
+    .animated-element {
+      opacity: 0; /* Initial state for CSS animations */
+      animation-fill-mode: forwards; /* Keep the 'to' state */
+    }
+
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.1.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.1.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@19.1.0/jsx-runtime",
+    "@google/genai": "https://esm.sh/@google/genai@1.6.0",
+    "leaflet": "https://esm.sh/leaflet@1.9.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-[var(--current-body-bg-base)] text-[var(--current-text-color)]">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
